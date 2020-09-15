@@ -20,15 +20,52 @@
   ],
   "author": "Vlad Lyamzin",
   "license": "MIT",
+  "build": {
+    "appId": "xyz.vlyamzin.gChat",
+    "productName": "Google Chat",
+    "asar": true,
+    "artifactName": "gChat-${version}-${arch}.${ext}",
+    "mac": {
+      "icon": "build/icons/chat.png",
+      "category": "public.app-category.social-networking",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "dmg": {
+      "sign": false
+    },
+    "win": {
+      "icon": "build/icons/chat.png"
+    },
+    "linux": {
+      "icon": "build/icons",
+      "category": "Network"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "vlyamzin",
+        "repo": "gChat",
+        "releaseType": "draft"
+      }
+    ]
+  },
   "bugs": {
     "url": "https://github.com/vlyamzin/gChat/issues"
   },
   "homepage": "https://github.com/vlyamzin/gChat#readme",
   "devDependencies": {
+    "@electron/typescript-definitions": "^8.7.7",
     "@typescript-eslint/eslint-plugin": "^4.1.0",
     "@typescript-eslint/parser": "^4.1.0",
     "electron": "^10.1.1",
+    "electron-builder": "^22.8.0",
     "eslint": "^7.8.1",
     "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "electron-window-state": "^5.0.3"
   }
 }

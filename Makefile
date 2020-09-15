@@ -1,5 +1,7 @@
 DIST_DIR=dist
 VERSION=0.1.0
+INDEX_FILE=src/index.html
+ASSETS=build/icons
 
 .PHONY: install
 install:
@@ -7,15 +9,19 @@ install:
 
 .PHONY: start
 start:
-	@echo -e "\nStarting the app...\n" && mkdir -p $(DIST_DIR) && cp src/index.html dist/ && npm start
+	@echo -e "\nStarting the app...\n" && \
+		mkdir -p $(DIST_DIR) && \
+		cp ${INDEX_FILE} dist/ && \
+		cp -r ${ASSETS} dist/ && \
+		npm start
 
 #.PHONY: build-rpm
 #build-rpm:
 #	./node_modules/.bin/electron-builder --linux rpm
 #
-#.PHONY: build-deb
-#build-deb:
-#	./node_modules/.bin/electron-builder --linux deb
+.PHONY: build-deb
+build-deb:
+	./node_modules/.bin/electron-builder --linux deb
 #
 #.PHONY: build-pacman
 #build-pacman:
