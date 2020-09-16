@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  serviceUrl: 'https://chat.google.com/'
+  serviceUrl: 'https://chat.google.com/',
+  useTray: true
 };

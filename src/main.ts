@@ -4,6 +4,7 @@ const path = require('path');
 const url = require('url');
 import {format} from 'url';
 import {environment} from './environment';
+import {gTray, IgTray} from './tray';
 
 // const {ShortcutConfig} = require('./shortcutConfig');
 // const shortcuts = require('./shortcuts');
@@ -14,11 +15,21 @@ let tray = null;
 let contextMenu;
 let config = {};
 
+export enum AppState {
+  IDLE = 1,
+  ACTIVE,
+  MINIMIZED,
+}
+
 class Main {
   static mainWindow: Electron.BrowserWindow;
   static application: Electron.App;
   static mainView: Electron.BrowserView;
+  static tray: IgTray;
   static BrowserWindowRef: any;
+  static appState: AppState;
+  private static onShow = Main.windowEventHandler('show');
+  private static onMinimize = Main.windowEventHandler('minimize');
 
   public static main(app: Electron.App, browserWindow: typeof BrowserWindow): void {
     Main.BrowserWindowRef = browserWindow;
@@ -31,7 +42,7 @@ class Main {
       defaultWidth: 800,
       defaultHeight: 600,
       fullScreen: false
-    })
+    });
 
     Main.mainWindow = new Main.BrowserWindowRef({
       width: mainWindowState.width,
@@ -44,18 +55,21 @@ class Main {
       icon: path.join(__dirname, 'icons/chat_64.png')
     });
 
-    Main.mainView = new BrowserView();
+    Main.mainView = new BrowserView({
+      webPreferences: { nodeIntegration: false }
+    });
     Main.mainWindow.setBrowserView(Main.mainView);
     Main.mainView.setBounds({x: 0, y: 0, width: mainWindowState.width, height: mainWindowState.height});
+    // Main.mainView.setBounds({x: 0, y: 0, width: 500, height: 200});
     Main.mainView.webContents.loadURL(environment.serviceUrl);
+    Main.appState = AppState.ACTIVE;
 
-    // Main.mainWindow.loadURL(format({
-    //   pathname: path.join(__dirname, 'index.html'),
-    //   protocol: 'file:',
-    //   slashes: true
-    // }));
-    Main.mainWindow.on('closed', Main.onClose);
+    Main.createTray();
+
+    Main.mainWindow.on('close', Main.onClose);
+    Main.mainWindow.on('show', Main.onShow);
     Main.mainWindow.on('minimize', Main.onMinimize);
+    Main.mainWindow.on('restore', Main.onShow)
 
     mainWindowState.manage(Main.mainWindow);
 
@@ -64,17 +78,32 @@ class Main {
     }
   }
 
-  private static onMinimize(event: Event): void {
-    event.preventDefault();
-    Main.mainWindow.hide();
+  private static windowEventHandler(eventType: string): Function {
+    return (event: Event) => {
+      event.preventDefault();
+      Main.appState = eventType === 'show' ? AppState.ACTIVE : AppState.MINIMIZED;
+      Main.tray?.updateTrayState(Main.appState);
+    }
   }
 
-  private static onClose(): void {
+  private static onClose(event: Event): boolean {
+    if (Main.tray?.hasTray && !Main.tray?.isQuitting) {
+      Main.windowEventHandler('close')(event);
+      Main.mainWindow.hide();
+    }
 
+    return false;
+  }
+
+  private static createTray(): void {
+    if (!Main.tray && environment.useTray) {
+      Main.tray = new gTray();
+      Main.tray.init(Main.mainWindow, Main.application);
+    }
   }
 }
 
-export default Main.main(app, BrowserWindow);
+Main.main(app, BrowserWindow);
 
 // function createTray(win) {
 //   // if tray-icon is set to null in config file then don't create a tray icon
