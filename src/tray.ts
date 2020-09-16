@@ -26,7 +26,7 @@ export class gTray implements IgTray {
     this._trayInstance = new Tray(path.join(__dirname, 'icons/chat_24.png'));
     this._contextMenu = Menu.buildFromTemplate([
       {
-        label: 'Show',
+        label: 'Open Google Chat',
         click: () => {
           window.show();
         },
@@ -34,14 +34,14 @@ export class gTray implements IgTray {
         id: 'show-window'
       },
       {
-        label: 'Hide',
+        label: 'Minimize to tray',
         click: () => {
           window.minimize();
         },
         id: 'hide-window'
       },
       {
-        label: 'Quit',
+        label: 'Quit Google Chat',
         click: () => {
           this._isQuitting = true;
           window.destroy();
