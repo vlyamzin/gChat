@@ -1,4 +1,4 @@
-import {BrowserWindow, app} from 'electron';
+import {BrowserWindow, app, ipcMain} from 'electron';
 import windowStateKeeper from 'electron-window-state';
 const path = require('path');
 import {environment} from './environment';
@@ -52,7 +52,10 @@ class Main {
     Main.mainWindow.on('close', Main.onClose);
     Main.mainWindow.on('show', Main.onShow);
     Main.mainWindow.on('minimize', Main.onMinimize);
-    Main.mainWindow.on('restore', Main.onShow)
+    Main.mainWindow.on('restore', Main.onShow);
+    ipcMain.on('notification-click', () => {
+        Main.mainWindow.show();
+    });
 
     mainWindowState.manage(Main.mainWindow);
   }

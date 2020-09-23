@@ -1,5 +1,6 @@
 import {BrowserView} from "electron";
 import {environment} from './environment';
+import * as path from 'path';
 
 
 export class BrowserViewContainer {
@@ -8,7 +9,10 @@ export class BrowserViewContainer {
 
   public init(window: Electron.BrowserWindow): void {
     this._browserViewRef = new BrowserView({
-      webPreferences: { nodeIntegration: false }
+      webPreferences: {
+        nodeIntegration: false,
+        preload: path.join(__dirname, 'preload.js'),
+      }
     });
     BrowserViewContainer._windowRef = window;
     this.setBounds();
