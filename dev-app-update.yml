@@ -1,0 +1,5 @@
+version: 0.1.2
+owner: Vlyamzin
+repo: Vlyamzin.gChat.Electron
+provider: github
+vPrefixedTagName: false

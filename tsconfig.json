@@ -5,7 +5,7 @@
     "esModuleInterop": true,
     "target": "ES6",
     "sourceMap": true,
-    "outDir": "dist",
+    "outDir": "compiled",
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*"]

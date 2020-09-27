@@ -4,6 +4,7 @@ const path = require('path');
 import {environment} from './environment';
 import {gTray, IgTray} from './tray';
 import {BrowserViewContainer} from './browser-view-container';
+import updater from './auto-updater';
 
 export enum AppState {
   IDLE = 1,
@@ -42,13 +43,15 @@ class Main {
       minHeight: 600,
       minWidth: 400,
       title: 'Google Chat',
-      icon: path.join(__dirname, 'icons/chat_64.png')
+      icon: path.join(__dirname, 'icons/chat_64.png'),
+      backgroundColor: '#002b36',
     });
 
     Main.appState = AppState.ACTIVE;
     Main.createBrowser();
     Main.createTray();
 
+    Main.application.on('before-quit', Main.onBeforeQuit)
     Main.mainWindow.on('close', Main.onClose);
     Main.mainWindow.on('show', Main.onShow);
     Main.mainWindow.on('minimize', Main.onMinimize);
@@ -58,6 +61,7 @@ class Main {
     });
 
     mainWindowState.manage(Main.mainWindow);
+    Main.startAutoUpdateCheck();
   }
 
   private static windowEventHandler(eventType: string): Function {
@@ -77,6 +81,12 @@ class Main {
     return false;
   }
 
+  private static onBeforeQuit(event: Event): void {
+    if (updater.restartAfterUpdate) {
+      Main.application.quit();
+    }
+  }
+
   private static createBrowser(): void {
     Main.mainView = new BrowserViewContainer();
     Main.mainView.init(Main.mainWindow);
@@ -88,6 +98,11 @@ class Main {
       Main.tray = new gTray();
       Main.tray.init(Main.mainWindow, Main.application);
     }
+  }
+
+  private static startAutoUpdateCheck(): void {
+    updater.init(Main.mainWindow);
+    updater.checkForUpdates();
   }
 }
 

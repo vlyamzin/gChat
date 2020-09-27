@@ -2,14 +2,13 @@
   "name": "gchat",
   "version": "0.1.0",
   "description": "Electron wrapper for Google Chat",
-  "main": "main.ts",
+  "main": "compiled/main.js",
   "scripts": {
     "tsc": "./node_modules/.bin/tsc",
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint --ext .ts --env node src/",
-    "start": "npm run build && electron ./dist/main.js",
-    "debug": "npm run build && electron --inspect=5858 ./dist/main.js"
+    "start": "npm run build && electron ./dist/debug/compiled/main.js"
   },
   "repository": {
     "type": "git",
@@ -19,20 +18,30 @@
     "electron",
     "google-chat"
   ],
-  "author": "Vlad Lyamzin",
+  "author": "Vlad Lyamzin <vlad.lyamzin@avenga.com>",
   "license": "MIT",
   "build": {
     "appId": "xyz.vlyamzin.gChat",
     "productName": "Google Chat",
-    "asar": true,
     "artifactName": "gChat-${version}-${arch}.${ext}",
+    "files": [
+      "**/*",
+      {
+        "from": "build/icons",
+        "to": "compiled/icons"
+      }
+    ],
     "mac": {
       "icon": "build/icons/chat.png",
       "category": "public.app-category.social-networking",
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "target": [
+        "zip",
+        "dmg"
+      ]
     },
     "dmg": {
       "sign": false
@@ -40,7 +49,9 @@
     "win": {
       "icon": "build/icons/chat.png"
     },
+    "snap": {},
     "linux": {
+      "target": "AppImage",
       "icon": "build/icons",
       "category": "Network"
     },
@@ -67,6 +78,8 @@
     "typescript": "^4.0.2"
   },
   "dependencies": {
+    "electron-log": "^4.2.4",
+    "electron-updater": "^4.3.5",
     "electron-window-state": "^5.0.3"
   }
 }

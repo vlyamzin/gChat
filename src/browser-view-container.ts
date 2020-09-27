@@ -1,4 +1,4 @@
-import {BrowserView} from "electron";
+import {BrowserView, shell} from "electron";
 import {environment} from './environment';
 import * as path from 'path';
 
@@ -19,6 +19,10 @@ export class BrowserViewContainer {
     this._browserViewRef.setAutoResize( { width: true, height: true } )
     this._browserViewRef.webContents.userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36';
     this._browserViewRef.webContents.loadURL(environment.serviceUrl);
+    this._browserViewRef.webContents.on("new-window", (event, url) => {
+      shell.openExternal(url);
+      event.preventDefault();
+    });
 
     if (!environment.production) {
       this._browserViewRef.webContents.openDevTools();

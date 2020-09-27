@@ -1,6 +1,7 @@
 import {Tray, Menu} from 'electron';
 import * as path from 'path';
 import {AppState} from './main';
+import updater from './auto-updater';
 
 export interface IgTray {
   init: (window: Electron.BrowserWindow, app: Electron.App) => void;
@@ -39,6 +40,12 @@ export class gTray implements IgTray {
           window.minimize();
         },
         id: 'hide-window'
+      },
+      {
+        label: 'Check for updates',
+        click: () => {
+          updater.checkForUpdates();
+        }
       },
       {
         label: 'Quit Google Chat',
