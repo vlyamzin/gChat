@@ -5,20 +5,23 @@ import * as path from 'path';
 
 export class BrowserViewContainer {
   private static _windowRef: Electron.BrowserWindow;
-  private _browserViewRef: Electron.BrowserView;
+  private readonly _browserViewRef: Electron.BrowserView;
 
-  public init(window: Electron.BrowserWindow): void {
+  constructor() {
     this._browserViewRef = new BrowserView({
       webPreferences: {
         nodeIntegration: false,
         preload: path.join(__dirname, 'preload.js'),
       }
     });
+  }
+
+  public init(window: Electron.BrowserWindow): void {
     BrowserViewContainer._windowRef = window;
-    this.setBounds();
     this._browserViewRef.setAutoResize( { width: true, height: true } )
-    this._browserViewRef.webContents.userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36';
     this._browserViewRef.webContents.loadURL(environment.serviceUrl);
+    this._browserViewRef.webContents.userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36';
+    this.setBounds();
     this._browserViewRef.webContents.on("new-window", (event, url) => {
       shell.openExternal(url);
       event.preventDefault();
