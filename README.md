@@ -2,9 +2,9 @@
 
 ![preview](build/preview.png)
 
-This is unofficial web wrapper for Google Chat. It brings the ability to run standalone application for users who don't use Google Chrome. 
+This is an unofficial web wrapper for Google Chat. It brings the ability to run the standalone application for users who don't use Google Chrome.
 
-Google Chat Desktop available on all platforms - Linux, Mac & Windows, and brings additional functionality which is missed in Chat web application.
+Google Chat Desktop available on all platforms - Linux, Mac & Windows, and brings additional functionality that is missed in Chat web application.
 
 ## Installation
 1. Go to Release page and get DEB/RPM/DMG/EXE package
