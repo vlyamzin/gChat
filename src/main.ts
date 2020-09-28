@@ -1,4 +1,4 @@
-import {BrowserWindow, app, ipcMain} from 'electron';
+import {BrowserWindow, app, ipcMain, BrowserView} from 'electron';
 import windowStateKeeper from 'electron-window-state';
 const path = require('path');
 import {environment} from './environment';
@@ -89,8 +89,8 @@ class Main {
 
   private static createBrowser(): void {
     Main.mainView = new BrowserViewContainer();
-    Main.mainView.init(Main.mainWindow);
     Main.mainWindow.setBrowserView(Main.mainView.browserView);
+    Main.mainView.init(Main.mainWindow);
   }
 
   private static createTray(): void {

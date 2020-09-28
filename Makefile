@@ -3,6 +3,8 @@ VERSION=0.1.4
 INDEX_FILE=src/index.html
 ASSETS=build/icons
 DEV_UPDATE=dev-app-update.yml
+PROD_ENV_FILE=src/environment.prod.ts
+ENV_FILE=src/environment.ts
 
 .PHONY: install
 install:
@@ -19,26 +21,31 @@ start:
 
 .PHONY: build-rpm
 build-rpm:
-	npm run build && ./node_modules/.bin/electron-builder --linux rpm
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --linux rpm --publish always
 #
 .PHONY: build-deb
 build-deb:
-	npm run build && ./node_modules/.bin/electron-builder --linux deb --publish always
+	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --linux deb --publish always
 #
 .PHONY: build-pacman
 build-pacman:
-	npm run build &&  ./node_modules/.bin/electron-builder --linux pacman
+	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build &&  ./node_modules/.bin/electron-builder --linux pacman --publish always
 #
 .PHONY: build-win
 build-win:
-	npm run build && ./node_modules/.bin/electron-builder --win
+	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --win --publish always
 #
 .PHONY: build-linux
 build-linux:
-	npm run build && ./node_modules/.bin/electron-builder --linux
+	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --linux --publish always
+#
+.PHONY: build-mac
+build-linux:
+	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --mac --publish always
 #
 .PHONY: build-all
 build-all:
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && \
 	npm run build && \
  	./node_modules/.bin/electron-builder --mac && \
 	./node_modules/.bin/electron-builder --linux && \
