@@ -8,7 +8,10 @@ ENV_FILE=src/environment.ts
 
 .PHONY: install
 install:
-	@npm install && echo -e "\nAll development dependencies have been installed successfully!\n"
+	@npm install && \
+	mkdir compiled && \
+	npm run tsc && \
+	echo -e "\nAll development dependencies have been installed successfully!\n"
 
 .PHONY: start
 start:
