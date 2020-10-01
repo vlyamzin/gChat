@@ -38,10 +38,7 @@
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
-      "target": [
-        "zip",
-        "dmg"
-      ]
+      "target": "dmg"
     },
     "dmg": {
       "sign": false
@@ -51,7 +48,7 @@
     },
     "snap": {},
     "linux": {
-      "target": "AppImage",
+      "target": ["AppImage", "deb", "rpm", "pacman", "tar.gz"],
       "icon": "build/icons",
       "category": "Network"
     },
