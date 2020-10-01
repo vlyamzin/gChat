@@ -25,23 +25,23 @@ build-rpm:
 #
 .PHONY: build-deb
 build-deb:
-	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --linux deb --publish always
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --linux deb --publish always
 #
 .PHONY: build-pacman
 build-pacman:
-	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build &&  ./node_modules/.bin/electron-builder --linux pacman --publish always
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build &&  ./node_modules/.bin/electron-builder --linux pacman --publish always
 #
 .PHONY: build-win
 build-win:
-	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --win --publish always
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --win --publish always
 #
 .PHONY: build-linux
 build-linux:
-	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --linux --publish always
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --linux --publish always
 #
 .PHONY: build-mac
-build-linux:
-	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --mac --publish always
+build-mac:
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --mac --publish always
 #
 .PHONY: build-all
 build-all:
