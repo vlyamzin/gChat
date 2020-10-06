@@ -8,7 +8,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint --ext .ts --env node src/",
-    "start": "npm run build && electron ./dist/debug/compiled/main.js"
+    "start": "npm run build && (cp -r compiled dist/debug || copy compiled dist\\debug) && electron ./dist/debug/compiled/main.js"
   },
   "repository": {
     "type": "git",
@@ -48,7 +48,13 @@
     },
     "snap": {},
     "linux": {
-      "target": ["AppImage", "deb", "rpm", "pacman", "tar.gz"],
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm",
+        "pacman",
+        "tar.gz"
+      ],
       "icon": "build/icons",
       "category": "Network"
     },
@@ -77,6 +83,7 @@
     "typescript": "^4.0.2"
   },
   "dependencies": {
+    "electron-context-menu": "^2.3.0",
     "electron-log": "^4.2.4",
     "electron-updater": "^4.3.5",
     "electron-window-state": "^5.0.3"

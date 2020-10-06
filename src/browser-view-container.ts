@@ -1,19 +1,22 @@
 import {BrowserView, shell} from "electron";
 import {environment} from './environment';
 import * as path from 'path';
+import {ContextMenu} from './context-menu';
 
 
 export class BrowserViewContainer {
   private static _windowRef: Electron.BrowserWindow;
   private readonly _browserViewRef: Electron.BrowserView;
+  private _contextMenu: ContextMenu;
 
   constructor() {
     this._browserViewRef = new BrowserView({
       webPreferences: {
         nodeIntegration: false,
-        preload: path.join(__dirname, 'preload.js'),
+        preload: path.join(__dirname, 'renderer', 'preload.js'),
       }
     });
+    this._contextMenu = new ContextMenu();
   }
 
   public init(window: Electron.BrowserWindow): void {
@@ -26,6 +29,8 @@ export class BrowserViewContainer {
       shell.openExternal(url);
       event.preventDefault();
     });
+
+    this._contextMenu.init(this._browserViewRef.webContents);
 
     if (!environment.production) {
       this._browserViewRef.webContents.openDevTools();
