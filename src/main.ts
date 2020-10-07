@@ -20,13 +20,20 @@ class Main {
   static tray: IgTray;
   static BrowserWindowRef: any;
   static appState: AppState;
+  private static gotLock: boolean;
   private static onShow = Main.windowEventHandler('show');
   private static onMinimize = Main.windowEventHandler('minimize');
 
   public static main(app: Electron.App, browserWindow: typeof BrowserWindow): void {
     Main.BrowserWindowRef = browserWindow;
     Main.application = app;
-    Main.application.on('ready', Main.onReady);
+    Main.gotLock = Main.application.requestSingleInstanceLock();
+    if (!Main.gotLock) {
+      Main.application.quit();
+    } else {
+      Main.application.on('second-instance', Main.onSecondInstance);
+      Main.application.on('ready', Main.onReady);
+    }
   }
 
   private static onReady(): void {
@@ -70,6 +77,15 @@ class Main {
       event.preventDefault();
       Main.appState = eventType === 'show' ? AppState.ACTIVE : AppState.MINIMIZED;
       Main.tray?.updateTrayState(Main.appState);
+    }
+  }
+
+  private static onSecondInstance(event: Event): void {
+    if (Main.mainWindow) {
+      if (Main.mainWindow.isMinimized() || AppState.MINIMIZED) {
+        Main.mainWindow.restore();
+      }
+      Main.mainWindow.focus();
     }
   }
 
