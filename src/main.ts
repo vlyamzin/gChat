@@ -5,6 +5,7 @@ import {environment} from './environment';
 import {gTray, IgTray} from './tray';
 import {BrowserViewContainer} from './browser-view-container';
 import updater from './auto-updater';
+import {Channels} from './shared/channels';
 
 export enum AppState {
   IDLE = 1,
@@ -56,7 +57,7 @@ class Main {
     Main.mainWindow.on('show', Main.onShow);
     Main.mainWindow.on('minimize', Main.onMinimize);
     Main.mainWindow.on('restore', Main.onShow);
-    ipcMain.on('notification-click', () => {
+    ipcMain.on(Channels.NOTIFICATION_CLICK, () => {
         Main.mainWindow.show();
     });
 
@@ -102,7 +103,9 @@ class Main {
 
   private static startAutoUpdateCheck(): void {
     updater.init(Main.mainWindow);
-    updater.checkForUpdates();
+    if (environment.production) {
+      updater.checkForUpdates();
+    }
   }
 }
 
