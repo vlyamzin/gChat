@@ -38,10 +38,7 @@
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
-      "target": [
-        "zip",
-        "dmg"
-      ]
+      "target": "dmg"
     },
     "dmg": {
       "sign": false
@@ -51,7 +48,7 @@
     },
     "snap": {},
     "linux": {
-      "target": "AppImage",
+      "target": ["AppImage", "deb", "rpm", "pacman", "tar.gz"],
       "icon": "build/icons",
       "category": "Network"
     },
@@ -72,8 +69,10 @@
     "@electron/typescript-definitions": "^8.7.7",
     "@typescript-eslint/eslint-plugin": "^4.1.0",
     "@typescript-eslint/parser": "^4.1.0",
+    "dotenv": "^8.2.0",
     "electron": "^10.1.1",
     "electron-builder": "^22.8.0",
+    "electron-notarize": "^1.0.0",
     "eslint": "^7.8.1",
     "typescript": "^4.0.2"
   },

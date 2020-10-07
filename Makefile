@@ -8,7 +8,10 @@ ENV_FILE=src/environment.ts
 
 .PHONY: install
 install:
-	@npm install && echo -e "\nAll development dependencies have been installed successfully!\n"
+	@npm install && \
+	mkdir compiled && \
+	npm run tsc && \
+	echo -e "\nAll development dependencies have been installed successfully!\n"
 
 .PHONY: start
 start:
@@ -21,35 +24,33 @@ start:
 
 .PHONY: build-rpm
 build-rpm:
-	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --linux rpm --publish always
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --linux rpm
 #
 .PHONY: build-deb
 build-deb:
-	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --linux deb --publish always
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --linux deb
 #
 .PHONY: build-pacman
 build-pacman:
-	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build &&  ./node_modules/.bin/electron-builder --linux pacman --publish always
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build &&  ./node_modules/.bin/electron-builder --linux pacman
 #
 .PHONY: build-win
 build-win:
-	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --win --publish always
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --win
 #
 .PHONY: build-linux
 build-linux:
-	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --linux --publish always
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --linux
 #
 .PHONY: build-mac
-build-linux:
-	cp ${PROD_ENV_FILE} ${ENV_FILE} npm run build && ./node_modules/.bin/electron-builder --mac --publish always
+build-mac:
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --mac
 #
 .PHONY: build-all
 build-all:
 	cp ${PROD_ENV_FILE} ${ENV_FILE} && \
 	npm run build && \
- 	./node_modules/.bin/electron-builder --mac && \
-	./node_modules/.bin/electron-builder --linux && \
-	./node_modules/.bin/electron-builder --win
+ 	./node_modules/.bin/electron-builder -mwl --publish always
 
 .PHONY: set-version
 set-version:
