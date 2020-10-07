@@ -1,6 +1,6 @@
-import {ipcRenderer} from "electron";
+import {ipcRenderer, IpcRendererEvent} from 'electron';
 import {Channels} from '../shared/channels';
-import {QuoteListener} from '../shared/interfaces';
+import {ICoords} from '../shared/interfaces';
 
 export class Quote {
   private static MESSAGE_BLOCK_CLASSES = new Set(['Zc1Emd', 'QIJiHb', 'MiRdyc']);
@@ -10,12 +10,20 @@ export class Quote {
 
   public initEventListeners(): void {
     ipcRenderer.on(Channels.QUOTE, this.quoteListener);
+    ipcRenderer.on(Channels.QUOTE_SELECTION, this.quoteSelectionListener);
   }
 
-  private quoteListener: QuoteListener = function (event, coords) {
+  private quoteListener(event: IpcRendererEvent, coords: ICoords): void {
     const elem = document.elementFromPoint(coords.x, coords.y) as HTMLElement;
     if (Quote.validateSelection(elem)) {
       Quote.copyMessageAndFocusInput(elem);
+    }
+  }
+
+  private quoteSelectionListener(event: IpcRendererEvent, text: string, coords: ICoords): void {
+    const elem = document.elementFromPoint(coords.x, coords.y) as HTMLElement;
+    if (Quote.validateSelection(elem)) {
+      Quote.copyMessageAndFocusInput(elem, text);
     }
   }
 
@@ -29,18 +37,19 @@ export class Quote {
     return false;
   }
 
-  private static copyMessageAndFocusInput(elem: HTMLElement): void {
+  private static copyMessageAndFocusInput(elem: HTMLElement, text?: string): void {
     const input = Quote.getById(Quote.INPUT_BLOCK_ID);
     const history = Quote.getById(Quote.INPUT_HISTORY_MESSAGE_ID);
-
 
     if (!input) {
       throw new Error('Input not found');
     }
 
+    const sText = text || Quote.getInnerText(elem);
+
     setTimeout(() => { history.classList.remove(Quote.INPUT_HISTORY_MESSAGE_HIDE); }, 0);
     input.focus();
-    input.textContent = '```Quote:\n"' + Quote.getInnerText(elem) + '"\n```\n ';
+    input.textContent = '```' + sText + '\n```\n ';
     Quote.putCursorToEnd(input);
 
   }
