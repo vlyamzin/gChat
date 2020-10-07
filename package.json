@@ -48,13 +48,7 @@
     },
     "snap": {},
     "linux": {
-      "target": [
-        "AppImage",
-        "deb",
-        "rpm",
-        "pacman",
-        "tar.gz"
-      ],
+      "target": ["AppImage", "deb", "rpm", "pacman", "tar.gz"],
       "icon": "build/icons",
       "category": "Network"
     },
