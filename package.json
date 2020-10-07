@@ -1,6 +1,6 @@
 {
   "name": "gchat",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Electron wrapper for Google Chat",
   "main": "compiled/main.js",
   "scripts": {
@@ -48,7 +48,13 @@
     },
     "snap": {},
     "linux": {
-      "target": ["AppImage", "deb", "rpm", "pacman", "tar.gz"],
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm",
+        "pacman",
+        "tar.gz"
+      ],
       "icon": "build/icons",
       "category": "Network"
     },
