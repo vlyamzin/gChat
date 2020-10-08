@@ -8,7 +8,7 @@ executors:
 filter-branch: &filter-branch
   branches:
     only:
-      - circleci-project-setup
+      - master
 
 jobs:
   deploy-linux-win:
