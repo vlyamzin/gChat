@@ -4,6 +4,9 @@ jobs:
       - image: electronuserland/builder:wine
     steps:
       - run: node --version
+      - run: make clean
+      - run: make install
+      - run: make build-lw-and-deploy
 version: 2.1
 # Use a package of configuration called an orb.
 orbs:

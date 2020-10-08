@@ -51,7 +51,13 @@ build-all:
 	cp ${PROD_ENV_FILE} ${ENV_FILE} && \
 	npm run build && \
  	./node_modules/.bin/electron-builder -mwl --publish always
-
+#
+.PHONY: build-lw-and-deploy
+build-lw-and-deploy:
+	cp ${PROD_ENV_FILE} ${ENV_FILE} && \
+	npm run build && \
+ 	./node_modules/.bin/electron-builder -wl --publish always
+#
 .PHONY: set-version
 set-version:
 	npm version $(VERSION)
