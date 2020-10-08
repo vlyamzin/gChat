@@ -1,0 +1,28 @@
+version: 2.1
+
+executors:
+  docker-env:
+    docker:
+      - image: electronuserland/builder:wine
+
+filter-branch: &filter-branch
+  branches:
+    only:
+      - master
+
+jobs:
+  deploy-linux-win:
+    executor: docker-env
+    steps:
+      - checkout
+      - run: node --version
+      - run: make clean
+      - run: make install
+      - run: make build-lw-and-deploy
+
+workflows:
+  electron-build:
+    jobs:
+      - deploy-linux-win:
+          filters:
+            <<: *filter-branch
