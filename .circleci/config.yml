@@ -4,9 +4,6 @@ jobs:
       - image: electronuserland/builder:wine
     steps:
       - run: node --version
-
-
-
 version: 2.1
 # Use a package of configuration called an orb.
 orbs:
