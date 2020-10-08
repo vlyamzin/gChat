@@ -4,9 +4,6 @@ executors:
   docker-env:
     docker:
       - image: electronuserland/builder:wine
-  macos-env:
-    macos:
-      xcode: "11"
 
 filter-branch: &filter-branch
   branches:
@@ -22,21 +19,10 @@ jobs:
       - run: make clean
       - run: make install
       - run: make build-lw-and-deploy
-  deploy-mac:
-    executor: macos-env
-    steps:
-      - checkout
-      - run: node --version
-      - run: make clean
-      - run: make install
-      - run: make build-lw-and-deploy
 
 workflows:
   electron-build:
     jobs:
       - deploy-linux-win:
-          filters:
-            <<: *filter-branch
-      - deploy-mac:
           filters:
             <<: *filter-branch
