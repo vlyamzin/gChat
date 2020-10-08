@@ -1,21 +1,42 @@
-jobs:
-  deploy:
+version: 2.1
+
+executors:
+  docker-env:
     docker:
       - image: electronuserland/builder:wine
+  macos-env:
+    macos:
+      xcode: "11"
+
+filter-branch: &filter-branch
+  branches:
+    only:
+      - circleci-project-setup
+
+jobs:
+  deploy-linux-win:
+    executor: docker-env
     steps:
       - checkout
       - run: node --version
       - run: make clean
       - run: make install
       - run: make build-lw-and-deploy
-version: 2.1
-# Use a package of configuration called an orb.
-orbs:
-  # Declare a dependency on the node-orb
-  welcome: circleci/node@4.1.0
-# Orchestrate or schedule a set of jobs
+  deploy-mac:
+    executor: macos-env
+    steps:
+      - checkout
+      - run: node --version
+      - run: make clean
+      - run: make install
+      - run: make build-lw-and-deploy
+
 workflows:
-  # Name the workflow "electron-build"
   electron-build:
     jobs:
-      - deploy
+      - deploy-linux-win:
+          filters:
+            <<: *filter-branch
+      - deploy-mac:
+          filters:
+            <<: *filter-branch

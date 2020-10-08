@@ -46,11 +46,11 @@ build-linux:
 build-mac:
 	cp ${PROD_ENV_FILE} ${ENV_FILE} && npm run build && ./node_modules/.bin/electron-builder --mac
 #
-.PHONY: build-all
-build-all:
+.PHONY: build-mac-and-deploy
+build-mac-and-deploy:
 	cp ${PROD_ENV_FILE} ${ENV_FILE} && \
 	npm run build && \
- 	./node_modules/.bin/electron-builder -mwl --publish always
+ 	./node_modules/.bin/electron-builder -m --publish always
 #
 .PHONY: build-lw-and-deploy
 build-lw-and-deploy:
