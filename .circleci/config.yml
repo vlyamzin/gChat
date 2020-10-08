@@ -3,6 +3,7 @@ jobs:
     docker:
       - image: electronuserland/builder:wine
     steps:
+      - checkout
       - run: node --version
       - run: make clean
       - run: make install
