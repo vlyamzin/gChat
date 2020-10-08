@@ -1,6 +1,6 @@
 {
   "name": "gchat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Electron wrapper for Google Chat",
   "main": "compiled/main.js",
   "scripts": {
