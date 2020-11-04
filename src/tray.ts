@@ -23,6 +23,11 @@ export class gTray implements IgTray {
   }
 
   public init(window: Electron.BrowserWindow, app: Electron.App): void {
+    if (process.platform === 'darwin') {
+      this._trayIsAvailable = false;
+      return;
+    }
+
     this._trayIsAvailable = true;
     this._trayInstance = new Tray(path.join(__dirname, 'icons/chat_24.png'));
     this._contextMenu = Menu.buildFromTemplate([
