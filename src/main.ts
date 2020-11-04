@@ -74,6 +74,10 @@ class Main {
 
   private static windowEventHandler(eventType: string): Function {
     return (event: Event) => {
+      if (!Main.tray?.hasTray) {
+        return;
+      }
+      
       event.preventDefault();
       Main.appState = eventType === 'show' ? AppState.ACTIVE : AppState.MINIMIZED;
       Main.tray?.updateTrayState(Main.appState);
