@@ -59,6 +59,10 @@ class Main {
     Main.createBrowser();
     Main.createTray();
 
+    if (process.platform === 'darwin'){
+      Main.application.dock.show();
+    }
+
     Main.application.on('before-quit', Main.onBeforeQuit)
     Main.mainWindow.on('close', Main.onClose);
     Main.mainWindow.on('show', Main.onShow);
@@ -77,7 +81,7 @@ class Main {
       if (!Main.tray?.hasTray) {
         return;
       }
-      
+
       event.preventDefault();
       Main.appState = eventType === 'show' ? AppState.ACTIVE : AppState.MINIMIZED;
       Main.tray?.updateTrayState(Main.appState);
