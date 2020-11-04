@@ -63,7 +63,8 @@ class Main {
       Main.application.dock.show();
     }
 
-    Main.application.on('before-quit', Main.onBeforeQuit)
+    Main.application.on('before-quit', Main.onBeforeQuit);
+    Main.application.on('activate', Main.onActivate);
     Main.mainWindow.on('close', Main.onClose);
     Main.mainWindow.on('show', Main.onShow);
     Main.mainWindow.on('minimize', Main.onMinimize);
@@ -105,6 +106,14 @@ class Main {
   private static onBeforeQuit(event: Event): void {
     if (updater.restartAfterUpdate) {
       Main.application.quit();
+    }
+  }
+
+  private static onActivate(event: Event): void {
+    if (process.platform === 'darwin') {
+      event.preventDefault();
+      Main.windowEventHandler('show')(event);
+      Main.mainWindow.restore();
     }
   }
 

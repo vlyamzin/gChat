@@ -73,7 +73,7 @@ export class gTray implements IgTray {
       {
         label: 'Open Google Chat',
         click: () => {
-          window.show();
+          window.restore();
         },
         enabled: false,
         id: 'show-window'
