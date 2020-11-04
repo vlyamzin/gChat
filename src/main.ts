@@ -78,7 +78,6 @@ class Main {
 
   private static windowEventHandler(eventType: string): Function {
     return (event: Event) => {
-      event.preventDefault();
       Main.appState = eventType === 'show' ? AppState.ACTIVE : AppState.MINIMIZED;
       Main.tray?.updateTrayState(Main.appState);
     }
@@ -95,6 +94,7 @@ class Main {
 
   private static onClose(event: Event): boolean {
     if (!Main.tray?.isQuitting) {
+      event.preventDefault();
       Main.windowEventHandler('close')(event);
       Main.mainWindow.hide();
     }
