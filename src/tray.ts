@@ -23,13 +23,46 @@ export class gTray implements IgTray {
   }
 
   public init(window: Electron.BrowserWindow, app: Electron.App): void {
+    this.createContextMenu(window, app);
     if (process.platform === 'darwin') {
       this._trayIsAvailable = false;
-      return;
+      app.dock.setMenu(this._contextMenu);
+    } else {
+      this._trayIsAvailable = true;
+      this._trayInstance = new Tray(path.join(__dirname, 'icons/chat_24.png'));
+      this._trayInstance.setToolTip('Google Chat');
+      this._trayInstance.setContextMenu(this._contextMenu);
+    }
+  }
+
+  public get tray(): Electron.Tray {
+    return this._trayInstance;
+  }
+
+  public get hasTray(): boolean {
+    return this._trayIsAvailable;
+  }
+
+  public get isQuitting(): boolean {
+    return this._isQuitting;
+  }
+
+  public updateTrayState(state: AppState): void {
+    switch (state) {
+      case AppState.ACTIVE:
+        this._contextMenu.getMenuItemById('show-window').enabled = false;
+        this._contextMenu.getMenuItemById('hide-window').enabled = true;
+        break;
+      case AppState.MINIMIZED:
+        this._contextMenu.getMenuItemById('show-window').enabled = true;
+        this._contextMenu.getMenuItemById('hide-window').enabled = false;
+        break;
     }
 
-    this._trayIsAvailable = true;
-    this._trayInstance = new Tray(path.join(__dirname, 'icons/chat_24.png'));
+    this._trayInstance.setContextMenu(this._contextMenu);
+  }
+
+  private createContextMenu(window: Electron.BrowserWindow, app: Electron.App): void {
     this._contextMenu = Menu.buildFromTemplate([
       {
         label: 'Open Google Chat',
@@ -62,34 +95,5 @@ export class gTray implements IgTray {
         id: 'quit-app'
       }
     ]);
-    this._trayInstance.setToolTip('Google Chat');
-    this._trayInstance.setContextMenu(this._contextMenu);
-  }
-
-  public get tray(): Electron.Tray {
-    return this._trayInstance;
-  }
-
-  public get hasTray(): boolean {
-    return this._trayIsAvailable;
-  }
-
-  public get isQuitting(): boolean {
-    return this._isQuitting;
-  }
-
-  public updateTrayState(state: AppState): void {
-    switch (state) {
-      case AppState.ACTIVE:
-        this._contextMenu.getMenuItemById('show-window').enabled = false;
-        this._contextMenu.getMenuItemById('hide-window').enabled = true;
-        break;
-      case AppState.MINIMIZED:
-        this._contextMenu.getMenuItemById('show-window').enabled = true;
-        this._contextMenu.getMenuItemById('hide-window').enabled = false;
-        break;
-    }
-
-    this._trayInstance.setContextMenu(this._contextMenu);
   }
 }
