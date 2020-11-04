@@ -94,7 +94,7 @@ class Main {
   }
 
   private static onClose(event: Event): boolean {
-    if (!Main.tray?.isQuitting) {
+    if (Main.tray && !Main.tray?.isQuitting) {
       event.preventDefault();
       Main.windowEventHandler('close')(event);
       Main.mainWindow.hide();
