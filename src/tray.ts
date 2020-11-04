@@ -13,6 +13,7 @@ export interface IgTray {
 
 export class gTray implements IgTray {
   private _trayInstance: Electron.Tray;
+  private _appInstance: Electron.App;
   private _contextMenu: Electron.Menu;
   private _trayIsAvailable: boolean;
   private _isQuitting: boolean;
@@ -23,6 +24,7 @@ export class gTray implements IgTray {
   }
 
   public init(window: Electron.BrowserWindow, app: Electron.App): void {
+    this._appInstance = app;
     this.createContextMenu(window, app);
     if (process.platform === 'darwin') {
       this._trayIsAvailable = false;
@@ -59,7 +61,11 @@ export class gTray implements IgTray {
         break;
     }
 
-    this._trayInstance.setContextMenu(this._contextMenu);
+    if (process.platform === 'darwin') {
+      this._appInstance.dock.setMenu(this._contextMenu);
+    } else {
+      this._trayInstance.setContextMenu(this._contextMenu);
+    }
   }
 
   private createContextMenu(window: Electron.BrowserWindow, app: Electron.App): void {
