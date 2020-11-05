@@ -2,6 +2,7 @@ import {Tray, Menu} from 'electron';
 import * as path from 'path';
 import {AppState} from './main';
 import updater from './auto-updater';
+import {Platform} from './shared/platform';
 
 export interface IgTray {
   init: (window: Electron.BrowserWindow, app: Electron.App) => void;
@@ -26,7 +27,7 @@ export class gTray implements IgTray {
   public init(window: Electron.BrowserWindow, app: Electron.App): void {
     this._appInstance = app;
     this.createContextMenu(window, app);
-    if (process.platform === 'darwin') {
+    if (Platform.isOSX()) {
       this._trayIsAvailable = false;
       app.dock.setMenu(this._contextMenu);
     } else {
@@ -61,7 +62,7 @@ export class gTray implements IgTray {
         break;
     }
 
-    if (process.platform === 'darwin') {
+    if (Platform.isOSX()) {
       this._appInstance.dock.setMenu(this._contextMenu);
     } else {
       this._trayInstance.setContextMenu(this._contextMenu);

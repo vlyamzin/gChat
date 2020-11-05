@@ -6,6 +6,7 @@ import {gTray, IgTray} from './tray';
 import {BrowserViewContainer} from './browser-view-container';
 import updater from './auto-updater';
 import {Channels} from './shared/channels';
+import {Platform} from './shared/platform';
 
 export enum AppState {
   IDLE = 1,
@@ -59,7 +60,7 @@ class Main {
     Main.createBrowser();
     Main.createTray();
 
-    if (process.platform === 'darwin'){
+    if (Platform.isOSX()){
       Main.application.dock.show();
     }
 
@@ -110,7 +111,7 @@ class Main {
   }
 
   private static onActivate(event: Event): void {
-    if (process.platform === 'darwin') {
+    if (Platform.isOSX()) {
       event.preventDefault();
       Main.windowEventHandler('show')(event);
       Main.mainWindow.restore();
