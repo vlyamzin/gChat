@@ -2,6 +2,7 @@ import {BrowserView, shell, session, OnBeforeSendHeadersListenerDetails, BeforeS
 import {environment} from './environment';
 import * as path from 'path';
 import {ContextMenu} from './context-menu';
+import {Platform} from './shared/platform';
 
 
 export class BrowserViewContainer {
@@ -51,11 +52,11 @@ export class BrowserViewContainer {
   }
 
   private static getTitleBarSize(): number {
-    if (process.platform === "darwin") {  // macOS
+    if (Platform.isOSX()) {
       return 20;
-    } else if (process.platform === "win32") {  // windows
+    } else if (Platform.isWin()) {
       return BrowserViewContainer._windowRef.isMenuBarVisible() ? 60 : 40;
-    } else {  // linux
+    } else {
       return BrowserViewContainer._windowRef.isMenuBarVisible() ? 25 : 0;
     }
   }
