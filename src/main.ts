@@ -6,6 +6,7 @@ import {gTray, IgTray} from './tray';
 import {BrowserViewContainer} from './browser-view-container';
 import updater from './auto-updater';
 import {Channels} from './shared/channels';
+import {Platform} from './shared/platform';
 
 export enum AppState {
   IDLE = 1,
@@ -59,7 +60,12 @@ class Main {
     Main.createBrowser();
     Main.createTray();
 
-    Main.application.on('before-quit', Main.onBeforeQuit)
+    if (Platform.isOSX()){
+      Main.application.dock.show();
+    }
+
+    Main.application.on('before-quit', Main.onBeforeQuit);
+    Main.application.on('activate', Main.onActivate);
     Main.mainWindow.on('close', Main.onClose);
     Main.mainWindow.on('show', Main.onShow);
     Main.mainWindow.on('minimize', Main.onMinimize);
@@ -74,7 +80,6 @@ class Main {
 
   private static windowEventHandler(eventType: string): Function {
     return (event: Event) => {
-      event.preventDefault();
       Main.appState = eventType === 'show' ? AppState.ACTIVE : AppState.MINIMIZED;
       Main.tray?.updateTrayState(Main.appState);
     }
@@ -90,7 +95,8 @@ class Main {
   }
 
   private static onClose(event: Event): boolean {
-    if (Main.tray?.hasTray && !Main.tray?.isQuitting) {
+    if (Main.tray && !Main.tray?.isQuitting) {
+      event.preventDefault();
       Main.windowEventHandler('close')(event);
       Main.mainWindow.hide();
     }
@@ -101,6 +107,14 @@ class Main {
   private static onBeforeQuit(event: Event): void {
     if (updater.restartAfterUpdate) {
       Main.application.quit();
+    }
+  }
+
+  private static onActivate(event: Event): void {
+    if (Platform.isOSX()) {
+      event.preventDefault();
+      Main.windowEventHandler('show')(event);
+      Main.mainWindow.restore();
     }
   }
 
