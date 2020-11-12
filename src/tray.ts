@@ -32,7 +32,7 @@ export class gTray implements IgTray {
       app.dock.setMenu(this._contextMenu);
     } else {
       this._trayIsAvailable = true;
-      this._trayInstance = new Tray(path.join(__dirname, 'icons/chat_24.png'));
+      this._trayInstance = new Tray(path.join(__dirname, 'icons/256x256.png'));
       this._trayInstance.setToolTip('Google Chat');
       this._trayInstance.setContextMenu(this._contextMenu);
     }

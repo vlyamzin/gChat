@@ -52,7 +52,7 @@ class Main {
       minHeight: 600,
       minWidth: 400,
       title: 'Google Chat',
-      icon: path.join(__dirname, 'icons/chat_64.png'),
+      icon: path.join(__dirname, 'icons/64x64.png'),
       backgroundColor: '#002b36',
     });
 
