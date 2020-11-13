@@ -33,7 +33,7 @@
       }
     ],
     "mac": {
-      "icon": "build/icons/chat.png",
+      "icon": "build/icons/mac/icon.icns",
       "category": "public.app-category.social-networking",
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
@@ -45,7 +45,7 @@
       "sign": false
     },
     "win": {
-      "icon": "build/icons/chat.png"
+      "icon": "build/icons/win/icon.ico"
     },
     "snap": {},
     "linux": {

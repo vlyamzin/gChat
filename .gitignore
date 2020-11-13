@@ -118,6 +118,9 @@ dist
 # Jetbrains
 .idea
 
+#mac os
+.DS_Store
+
 # gChat
 compiled/
 
