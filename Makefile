@@ -1,5 +1,5 @@
 DIST_DIR=dist
-VERSION=1.0.1
+VERSION=1.0.2
 INDEX_FILE=src/index.html
 ASSETS=build/icons
 DEV_UPDATE=dev-app-update.yml
