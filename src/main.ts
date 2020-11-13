@@ -53,7 +53,8 @@ class Main {
       minWidth: 400,
       title: 'Google Chat',
       icon: path.join(__dirname, 'icons/64x64.png'),
-      backgroundColor: '#002b36',
+      backgroundColor: '#fff',
+      autoHideMenuBar: true
     });
 
     Main.appState = AppState.ACTIVE;
