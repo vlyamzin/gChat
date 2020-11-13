@@ -89,6 +89,7 @@ export class gTray implements IgTray {
       {
         label: 'Check for updates',
         click: () => {
+          updater.performedByUser = true;
           updater.checkForUpdates();
         }
       },

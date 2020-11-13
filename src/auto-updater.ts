@@ -9,6 +9,7 @@ class AutoUpdater {
   public restartAfterUpdate: boolean;
   private static _updater = autoUpdater;
   private _cancellationToken: CancellationToken;
+  private _performedByUser = false;
 
   private static mapReleaseNotes(releaseNotes: string | Array<ReleaseNoteInfo> | null): string {
     if (typeof releaseNotes === 'string') {
@@ -51,10 +52,21 @@ class AutoUpdater {
     this._cancellationToken = token;
   }
 
+  public get performedByUser(): boolean {
+    return this._performedByUser;
+  }
+
+  public set performedByUser(value: boolean) {
+    this._performedByUser = value;
+  }
+
   public checkForUpdates(): void {
     this.instance.checkForUpdates()
       .then((result) => this.cancellationToken = result.cancellationToken)
-      .catch((err) => console.log('Auto Update service is not started', err));
+      .catch((err) => console.log('Auto Update service is not started', err))
+      .finally(() => {
+          this.performedByUser = false;
+      });
   }
 
   private async onAvailable(info: UpdateInfo, window: BrowserWindow): Promise<void> {
@@ -72,12 +84,14 @@ class AutoUpdater {
   }
 
   private onNotAvailable(window: BrowserWindow): void {
-    dialog.showMessageBox(window, {
-      type: 'info',
-      buttons: ['OK'],
-      title: 'No updates available',
-      message: 'There is nothing to update. You have the latest version.'
-    });
+    if (this.performedByUser) {
+      dialog.showMessageBox(window, {
+        type: 'info',
+        buttons: ['OK'],
+        title: 'No updates available',
+        message: 'There is nothing to update. You have the latest version.'
+      });
+    }
   }
 
   private async onDownloaded(window: BrowserWindow): Promise<void> {
@@ -97,6 +111,9 @@ class AutoUpdater {
 
   private onError(window: BrowserWindow): void {
     console.log('Error happened during the update');
+    if (!this.performedByUser) {
+      return;
+    }
     if (environment.production) {
       dialog.showMessageBox(window, {
         type: 'error',
