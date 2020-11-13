@@ -6,6 +6,7 @@ import {gTray, IgTray} from './tray';
 import {BrowserViewContainer} from './browser-view-container';
 import updater from './auto-updater';
 import {Channels} from './shared/channels';
+import {Platform} from './shared/platform';
 
 export enum AppState {
   IDLE = 1,
@@ -20,13 +21,20 @@ class Main {
   static tray: IgTray;
   static BrowserWindowRef: any;
   static appState: AppState;
+  private static gotLock: boolean;
   private static onShow = Main.windowEventHandler('show');
   private static onMinimize = Main.windowEventHandler('minimize');
 
   public static main(app: Electron.App, browserWindow: typeof BrowserWindow): void {
     Main.BrowserWindowRef = browserWindow;
     Main.application = app;
-    Main.application.on('ready', Main.onReady);
+    Main.gotLock = Main.application.requestSingleInstanceLock();
+    if (!Main.gotLock) {
+      Main.application.quit();
+    } else {
+      Main.application.on('second-instance', Main.onSecondInstance);
+      Main.application.on('ready', Main.onReady);
+    }
   }
 
   private static onReady(): void {
@@ -44,15 +52,21 @@ class Main {
       minHeight: 600,
       minWidth: 400,
       title: 'Google Chat',
-      icon: path.join(__dirname, 'icons/chat_64.png'),
-      backgroundColor: '#002b36',
+      icon: path.join(__dirname, 'icons/64x64.png'),
+      backgroundColor: '#fff',
+      autoHideMenuBar: true
     });
 
     Main.appState = AppState.ACTIVE;
     Main.createBrowser();
     Main.createTray();
 
-    Main.application.on('before-quit', Main.onBeforeQuit)
+    if (Platform.isOSX()){
+      Main.application.dock.show();
+    }
+
+    Main.application.on('before-quit', Main.onBeforeQuit);
+    Main.application.on('activate', Main.onActivate);
     Main.mainWindow.on('close', Main.onClose);
     Main.mainWindow.on('show', Main.onShow);
     Main.mainWindow.on('minimize', Main.onMinimize);
@@ -67,14 +81,23 @@ class Main {
 
   private static windowEventHandler(eventType: string): Function {
     return (event: Event) => {
-      event.preventDefault();
       Main.appState = eventType === 'show' ? AppState.ACTIVE : AppState.MINIMIZED;
       Main.tray?.updateTrayState(Main.appState);
     }
   }
 
+  private static onSecondInstance(event: Event): void {
+    if (Main.mainWindow) {
+      if (Main.mainWindow.isMinimized() || AppState.MINIMIZED) {
+        Main.mainWindow.restore();
+      }
+      Main.mainWindow.focus();
+    }
+  }
+
   private static onClose(event: Event): boolean {
-    if (Main.tray?.hasTray && !Main.tray?.isQuitting) {
+    if (Main.tray && !Main.tray?.isQuitting) {
+      event.preventDefault();
       Main.windowEventHandler('close')(event);
       Main.mainWindow.hide();
     }
@@ -85,6 +108,14 @@ class Main {
   private static onBeforeQuit(event: Event): void {
     if (updater.restartAfterUpdate) {
       Main.application.quit();
+    }
+  }
+
+  private static onActivate(event: Event): void {
+    if (Platform.isOSX()) {
+      event.preventDefault();
+      Main.windowEventHandler('show')(event);
+      Main.mainWindow.restore();
     }
   }
 

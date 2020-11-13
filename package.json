@@ -1,6 +1,6 @@
 {
   "name": "gchat",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Electron wrapper for Google Chat",
   "main": "compiled/main.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint --ext .ts --env node src/",
-    "start": "npm run build && (cp -r compiled dist/debug || copy compiled dist\\debug) && electron ./dist/debug/compiled/main.js"
+    "start": "npm run build && (cp -r compiled dist/debug || copy compiled dist\\debug) && electron ./dist/debug/compiled/main.js",
+    "debug": "npm run build && (cp -r compiled dist/debug || copy compiled dist\\debug) && electron --inspect=5858 ./dist/debug/compiled/main.js"
   },
   "repository": {
     "type": "git",
@@ -32,7 +33,7 @@
       }
     ],
     "mac": {
-      "icon": "build/icons/chat.png",
+      "icon": "build/icons/mac/icon.icns",
       "category": "public.app-category.social-networking",
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
@@ -44,7 +45,7 @@
       "sign": false
     },
     "win": {
-      "icon": "build/icons/chat.png"
+      "icon": "build/icons/win/icon.ico"
     },
     "snap": {},
     "linux": {

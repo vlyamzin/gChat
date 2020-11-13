@@ -2,6 +2,7 @@ import {Tray, Menu} from 'electron';
 import * as path from 'path';
 import {AppState} from './main';
 import updater from './auto-updater';
+import {Platform} from './shared/platform';
 
 export interface IgTray {
   init: (window: Electron.BrowserWindow, app: Electron.App) => void;
@@ -13,6 +14,7 @@ export interface IgTray {
 
 export class gTray implements IgTray {
   private _trayInstance: Electron.Tray;
+  private _appInstance: Electron.App;
   private _contextMenu: Electron.Menu;
   private _trayIsAvailable: boolean;
   private _isQuitting: boolean;
@@ -23,42 +25,17 @@ export class gTray implements IgTray {
   }
 
   public init(window: Electron.BrowserWindow, app: Electron.App): void {
-    this._trayIsAvailable = true;
-    this._trayInstance = new Tray(path.join(__dirname, 'icons/chat_24.png'));
-    this._contextMenu = Menu.buildFromTemplate([
-      {
-        label: 'Open Google Chat',
-        click: () => {
-          window.show();
-        },
-        enabled: false,
-        id: 'show-window'
-      },
-      {
-        label: 'Minimize to tray',
-        click: () => {
-          window.minimize();
-        },
-        id: 'hide-window'
-      },
-      {
-        label: 'Check for updates',
-        click: () => {
-          updater.checkForUpdates();
-        }
-      },
-      {
-        label: 'Quit Google Chat',
-        click: () => {
-          this._isQuitting = true;
-          window.destroy();
-          app.quit();
-        },
-        id: 'quit-app'
-      }
-    ]);
-    this._trayInstance.setToolTip('Google Chat');
-    this._trayInstance.setContextMenu(this._contextMenu);
+    this._appInstance = app;
+    this.createContextMenu(window, app);
+    if (Platform.isOSX()) {
+      this._trayIsAvailable = false;
+      app.dock.setMenu(this._contextMenu);
+    } else {
+      this._trayIsAvailable = true;
+      this._trayInstance = new Tray(path.join(__dirname, 'icons/256x256.png'));
+      this._trayInstance.setToolTip('Google Chat');
+      this._trayInstance.setContextMenu(this._contextMenu);
+    }
   }
 
   public get tray(): Electron.Tray {
@@ -85,6 +62,46 @@ export class gTray implements IgTray {
         break;
     }
 
-    this._trayInstance.setContextMenu(this._contextMenu);
+    if (Platform.isOSX()) {
+      this._appInstance.dock.setMenu(this._contextMenu);
+    } else {
+      this._trayInstance.setContextMenu(this._contextMenu);
+    }
+  }
+
+  private createContextMenu(window: Electron.BrowserWindow, app: Electron.App): void {
+    this._contextMenu = Menu.buildFromTemplate([
+      {
+        label: 'Open Google Chat',
+        click: () => {
+          window.restore();
+        },
+        enabled: false,
+        id: 'show-window'
+      },
+      {
+        label: 'Minimize to tray',
+        click: () => {
+          window.minimize();
+        },
+        id: 'hide-window'
+      },
+      {
+        label: 'Check for updates',
+        click: () => {
+          updater.performedByUser = true;
+          updater.checkForUpdates();
+        }
+      },
+      {
+        label: 'Quit Google Chat',
+        click: () => {
+          this._isQuitting = true;
+          window.destroy();
+          app.quit();
+        },
+        id: 'quit-app'
+      }
+    ]);
   }
 }
